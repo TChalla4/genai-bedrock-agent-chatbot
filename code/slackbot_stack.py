@@ -25,18 +25,21 @@ class SlackBotStack(cdk.Stack):
             resources=["*"]  # Replace with specific Bedrock agent ARN if possible
         ))
 
-        # Store Slack Bot Token securely
+        # Store Slack Bot Token securely in AWS Secrets Manager
         slack_secret = secretsmanager.Secret(self, "SlackBotToken",
             secret_name="slack-bot-token",
             description="Slack Bot Token for API Integration"
         )
 
+        # Grant Lambda permission to read the secret from Secrets Manager
+        slack_secret.grant_read(lambda_role)
+
         # Create the Lambda function for webhook processing
         slack_lambda = lambda_.Function(
-            self, "SlackBotLambda",
+            self, "SlackWebhookProcessor",
             runtime=lambda_.Runtime.PYTHON_3_9,
             handler="index.lambda_handler",
-            code=lambda_.Code.from_asset("lambda"),
+            code=lambda_.Code.from_asset("lambdas/slack_webhook"),
             role=lambda_role,
             environment={
                 "SLACK_SECRET_ARN": slack_secret.secret_arn,
@@ -44,9 +47,6 @@ class SlackBotStack(cdk.Stack):
                 "AWS_REGION": self.region
             },
         )
-
-        # Grant Lambda permission to read from Secrets Manager
-        slack_secret.grant_read(slack_lambda)
 
         # API Gateway for webhook endpoint
         api = apigateway.RestApi(
@@ -64,3 +64,4 @@ class SlackBotStack(cdk.Stack):
             value=api.url,
             description="Slack Bot Webhook API Endpoint"
         )
+
