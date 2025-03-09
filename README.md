@@ -141,6 +141,7 @@ code                              # Root folder for code for this solution
 ├── streamlit-app                         # Streamlit app interface for chatbot
 ├── setup_assistant.sh                     # Script for setting up secrets and deployment
 └── code_stack.py                     # AWS CDK stack that deploys all AWS resources
+└── slackbot_stack.py                     # AWS CDK stack that slackbot_architecture
 ```
 
 ## Customize the chatbot with your own data
