@@ -56,6 +56,39 @@ This bot is useful for scenarios where real-time AI-powered responses are needed
 
 ## Deployment
 
+### Step 1: Run the Setup Assisant 
+
+This project includes an automated setup script that configures everything for you. Run:
+
+```.sh
+chmod +x setup_assistant.sh
+./setup_assistant.sh
+```
+
+This script:
+
+- Prompts you for required credentials (AWS Region, Slack bot token)
+- Stores credentials securely in AWS Secrets Manager
+- Deploys the CDK stack (API GW, Lambda, Bedrock, IAM roles)
+- Retrieves and stores the Bedrock Agent ID automatically
+
+### Step 2: Configure Slack Webhook 
+
+Once deployment is complete:
+
+- Navigate to your Slack API App settings
+- Under Event Subscriptions
+- Subscribe to the following events
+  `app_mention`
+  `message.im`
+- Save and deploy
+
+### Step 3: Test the Slack Bot 
+
+- Mention the bot in Slack:
+  `@YourBot Hello!`
+- The bot should reply with an AI-generated response 
+
 To run the app locally, first add a .env file to 'code/streamlit-app' folder containing the following:
 
 ```.env
