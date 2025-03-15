@@ -26,7 +26,7 @@ This GenAI ChatBot is a serverless, event-driven Slack bot powered by Amazon Bed
 - A Slack Webhook Receiver Lambda function
 - API Gateway integration for Slack event subscriptions.
 - AWS Secrets Manager for storing credentials securely.
-- Automated deployment script (setup_assistant.sh) to configure AWS services and Slack integration seamlessly
+- Automated deployment script (setup.sh) to configure AWS services and Slack integration seamlessly
 - Bedrock Agent Invocation for AI-powered responses.
 
 This bot is useful for scenarios where real-time AI-powered responses are needed **in Slack**, such as:
