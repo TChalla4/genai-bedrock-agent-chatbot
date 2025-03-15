@@ -175,7 +175,7 @@ code                              # Root folder for code for this solution
 │   ├── boto3_layer                       # Boto3 layer shared across all lambdas
 │   ├── opensearch_layer                  # OpenSearch layer for indexing
 ├── streamlit-app                         # Streamlit app interface for chatbot
-├── setup_assistant.sh                     # Script for setting up secrets and deployment
+├── setup.sh                     # Script for setting up secrets and deployment
 └── code_stack.py                     # AWS CDK stack that deploys all AWS resources
 └── slackbot_stack.py                     # AWS CDK stack that slackbot_architecture
 ```
