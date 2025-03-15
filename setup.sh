@@ -96,12 +96,10 @@ print_section "Slack App Configuration"
 echo "Please create a Slack App with the following features:"
 echo "1. Bot Token Scopes: chat:write, channels:history, im:history, groups:history"
 echo "2. Event Subscriptions: message.channels, message.groups, message.im"
-echo "3. Interactive Components: Enable for verification/rejection buttons"
 echo -e "${YELLOW}Note: You'll need to update the Request URL after deployment${NC}"
 
 read -p "Enter your Slack Bot Token (starts with 'xoxb-'): " SLACK_BOT_TOKEN
 read -p "Enter your Slack Signing Secret: " SLACK_SIGNING_SECRET
-read -p "Enter the channel ID for senior engineer notifications (e.g., C12345678): " VERIFICATION_CHANNEL_ID
 
 # Validate Slack token format
 if [[ ! $SLACK_BOT_TOKEN =~ ^xoxb- ]]; then
@@ -109,29 +107,11 @@ if [[ ! $SLACK_BOT_TOKEN =~ ^xoxb- ]]; then
     exit 1
 fi
 
-# Memory Management Configuration
-print_section "Memory Management Configuration"
-echo "Configure how unverified memories are handled:"
-read -p "Expiration time for unverified memories in days (default: 7): " MEMORY_EXPIRATION_DAYS
-MEMORY_EXPIRATION_DAYS=${MEMORY_EXPIRATION_DAYS:-7}
-
-read -p "Enable daily digest of unverified memories? (y/n, default: y): " ENABLE_DAILY_DIGEST
-ENABLE_DAILY_DIGEST=${ENABLE_DAILY_DIGEST:-y}
-
-# Validate memory expiration value
-if ! [[ "$MEMORY_EXPIRATION_DAYS" =~ ^[0-9]+$ ]]; then
-    echo -e "${RED}Invalid expiration time.${NC} Using default: 7 days."
-    MEMORY_EXPIRATION_DAYS=7
-fi
-
 # Confirm settings
 print_section "Configuration Summary"
 echo -e "AWS Region: ${YELLOW}$AWS_REGION${NC}"
 echo -e "Slack Bot Token: ${YELLOW}[HIDDEN]${NC}"
 echo -e "Slack Signing Secret: ${YELLOW}[HIDDEN]${NC}"
-echo -e "Verification Channel: ${YELLOW}$VERIFICATION_CHANNEL_ID${NC}"
-echo -e "Memory Expiration: ${YELLOW}$MEMORY_EXPIRATION_DAYS days${NC}"
-echo -e "Daily Digest: ${YELLOW}$(if [[ "$ENABLE_DAILY_DIGEST" == "y" ]]; then echo "Enabled"; else echo "Disabled"; fi)${NC}"
 
 echo -e "\n${YELLOW}Important:${NC} This setup will deploy both the Bedrock Agent and Slack integration stacks."
 read -p "Do you want to proceed with deployment? (y/n): " confirm
@@ -149,9 +129,6 @@ cat > .config/.env << EOF
 AWS_REGION=$AWS_REGION
 SLACK_BOT_TOKEN=$SLACK_BOT_TOKEN
 SLACK_SIGNING_SECRET=$SLACK_SIGNING_SECRET
-VERIFICATION_CHANNEL_ID=$VERIFICATION_CHANNEL_ID
-MEMORY_EXPIRATION_DAYS=$MEMORY_EXPIRATION_DAYS
-ENABLE_DAILY_DIGEST=$ENABLE_DAILY_DIGEST
 EOF
 
 echo -e "${GREEN}✓ Configuration stored in .config/.env${NC}"
@@ -163,7 +140,7 @@ echo "Storing Slack credentials securely..."
 # Create a combined secret with all Slack-related values
 aws secretsmanager create-secret \
     --name slack-integration-secrets \
-    --secret-string "{\"SLACK_BOT_TOKEN\":\"$SLACK_BOT_TOKEN\",\"SLACK_SIGNING_SECRET\":\"$SLACK_SIGNING_SECRET\",\"VERIFICATION_CHANNEL_ID\":\"$VERIFICATION_CHANNEL_ID\"}" \
+    --secret-string "{\"SLACK_BOT_TOKEN\":\"$SLACK_BOT_TOKEN\",\"SLACK_SIGNING_SECRET\":\"$SLACK_SIGNING_SECRET\"}" \
     --region $AWS_REGION \
     --output json > /dev/null || { echo -e "${RED}Failed to create secret in AWS Secrets Manager${NC}"; exit 1; }
 
@@ -185,8 +162,6 @@ fi
 
 # Export environment variables for CDK
 export CDK_DEPLOY_REGION=$AWS_REGION
-export MEMORY_EXPIRATION_DAYS=$MEMORY_EXPIRATION_DAYS
-export ENABLE_DAILY_DIGEST=$ENABLE_DAILY_DIGEST
 
 # Deploy the stacks
 echo "Deploying CDK stacks..."
@@ -201,16 +176,12 @@ echo -e "${GREEN}Your Amazon Bedrock Slack integration has been successfully dep
 echo -e "\n${YELLOW}Next Steps:${NC}"
 echo "1. Configure your Slack App with the following URLs:"
 echo -e "   - Event Subscription Request URL: ${GREEN}${API_ENDPOINT}/webhook${NC}"
-echo -e "   - Interactive Components Request URL: ${GREEN}${API_ENDPOINT}/interactive${NC}"
 echo ""
 echo "2. Invite your bot to channels where it should listen"
 echo "3. Use the bot with thread-based conversations:"
 echo "   - First message: @yourbot what is the instance type for ML?"
 echo "   - Follow-ups in thread: @yourbot can you provide pricing details?"
-echo "   - Teaching: /teach [your information]"
 echo "   - Note: ALWAYS include @yourbot in every message that needs a response"
-echo ""
-echo "4. Monitor the verification channel for memory approval requests"
 
 echo -e "\n${BLUE}Documentation:${NC} For more information, see the README.md file"
 echo -e "${BLUE}Support:${NC} For issues, please file a ticket in the GitHub repository"
