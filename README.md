@@ -64,8 +64,8 @@ This bot is useful for scenarios where real-time AI-powered responses are needed
 This project includes an automated setup script that configures everything for you. Run:
 
 ```.sh
-chmod +x setup_assistant.sh
-./setup_assistant.sh
+chmod +x setup.sh
+./setup.sh
 ```
 
 This script:
