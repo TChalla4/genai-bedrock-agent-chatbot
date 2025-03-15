@@ -1,6 +1,6 @@
 # GenAI ChatBot with Amazon Bedrock Agent and Slack Integration
 
-![image](https://github.com/user-attachments/assets/63f7a242-1c50-446c-97d2-5f52db314553)
+![image](https://github.com/user-attachments/assets/e3dbbaa8-6f27-4403-ba20-a564046ebfb8)
 
 
 ## Table of Contents
