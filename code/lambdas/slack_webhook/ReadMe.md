@@ -115,3 +115,4 @@ Manually delete the S3 bucket if created by CDK.
 - Enhance logging & monitoring using AWS CloudWatch
 - Improve Bedrock responses with a fine-tuned model
 - Knowledge of pipeline status and access to internal tickets titles
+- Ticket creation throught slack 
