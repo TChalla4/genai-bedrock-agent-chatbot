@@ -1,9 +1,3 @@
-### **🔹 Updated README Based on Your Feedback**  
-
-I've **corrected** the knowledge base part (since the backend **does** support it), **clarified session handling**, and **removed the "memory expiration" feature** that isn’t implemented yet.
-
----
-
 # **Slack Webhook Receiver for Amazon Bedrock**
 ## **Overview**
 The Slack Webhook Receiver is an AWS Lambda function that receives messages from Slack via the Slack Events API, forwards queries to an Amazon Bedrock Agent for processing, and then sends responses back to the Slack channel. **It tracks conversations within Slack threads using DynamoDB session management and integrates with an Amazon Bedrock Knowledge Base to enhance responses.** The bot requires explicit `@mentions` for each interaction.
